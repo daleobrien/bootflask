@@ -5,39 +5,11 @@
 
 from flask import Flask, request, render_template, redirect, url_for
 from flask.ext.login import (LoginManager, login_required,
-                            login_user, logout_user, UserMixin, AnonymousUser,
+                            login_user, logout_user,
                             fresh_login_required)
 
-from bcrypt import hashpw
-import weakref
+from models import User, Anonymous
 
-
-class User(UserMixin):
-
-    instances = []
-
-    def __init__(self, name, id, hashed_password, active=True):
-        User.instances.append(weakref.proxy(self))
-        self.name = name
-        self.id = id
-        self.active = active
-        self.hashed_password = hashed_password
-
-    def is_active(self):
-        return self.active
-
-    @classmethod
-    def check_password(cls, user_name, password):
-
-        for user in User.instances:
-            if user.name == user_name:
-                return hashpw(password, user.hashed_password) == \
-                                                          user.hashed_password
-        return False
-
-
-class Anonymous(AnonymousUser):
-    name = u"Anonymous"
 
 # passwords generated like this
 # hashpw("password", bcrypt.gensalt(14))
