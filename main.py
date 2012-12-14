@@ -1,17 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-Flask-Login example
-===================
-This is a small application that provides a trivial demonstration of
-Flask-Login, including remember me functionality.
 
-:copyright: (C) 2011 by Matthew Frazier.
-:license:   MIT/X11, see LICENSE for more details.
 """
-from flask import Flask, request, render_template, redirect, url_for, flash
+
+from flask import Flask, request, render_template, redirect, url_for
 from flask.ext.login import (LoginManager, login_required,
                             login_user, logout_user, UserMixin, AnonymousUser,
-                            confirm_login, fresh_login_required)
+                            fresh_login_required)
 
 from bcrypt import hashpw
 import weakref
@@ -117,7 +112,6 @@ def login():
 @login_required
 def logout():
     logout_user()
-    flash("Logged out.")
     return redirect(url_for("index"))
 
 if __name__ == "__main__":

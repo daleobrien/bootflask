@@ -72,7 +72,7 @@
 
           {% if current_user.is_authenticated() %}
             <form class="navbar-form pull-right" action="/logout" method=post>
-              <button type="submit" class="btn">Sign out</button>
+              <button type="submit" class="btn">{{ current_user.name }} <i class="icon-lock"></i></button>
             </form>
           {% else %}
             <!--<form class="navbar-form pull-right" action="/login" method=post>-->
