@@ -3,33 +3,18 @@
 
 """
 
-from flask import Flask, request, render_template, redirect, url_for
+from flask import (Flask, request, render_template, redirect, url_for,
+                   jsonify)
 from flask.ext.login import (LoginManager, login_required,
                             login_user, logout_user,
                             fresh_login_required)
 
 from models import User, Anonymous
-
-
-# passwords generated like this
-# hashpw("password", bcrypt.gensalt(14))
-# where 14 is the work factor, the larger it is, the harder and slower it is.
-USERS = {
-    1: User(u"Notch", 1,
-               '$2a$13$M9gsC/vjPTwUEFVTWO0Md./xnCcm.9ve55e3Y8cQ66Kw9fe9.5JXu'),
-    2: User(u"Steve", 2,
-               '$2a$13$OCggYrEukY0zdBM8tOuTUeUwP4KmgBa8KwIH/3dqzfJvSYqGBHdq2'),
-    3: User(u"Creeper", 3,
-        '$2a$14$9uCZINep37AT2u3bwgquF..NvWACbQ7Ra9ermgH3PYKMu5GmBfjjC', False),
-}
-
-USER_NAMES = dict((u.name, u) for u in USERS.itervalues())
+from settings import USERS, MENUS, USER_NAMES
 
 
 app = Flask(__name__)
 
-SECRET_KEY = "yeah, not actually a secret"
-DEBUG = True
 
 app.config.from_object(__name__)
 
@@ -55,10 +40,20 @@ def index():
     return render_template("main.html")
 
 
-@app.route("/secret")
+@app.route("/_menu")
 @fresh_login_required
-def secret():
-    return render_template("secret.html")
+def menu_route():
+
+    menu_pick = request.args.get('id', 0, type=str)
+
+    data = {}
+
+    # figure out which panel, and load as needed
+    if menu_pick in MENUS:
+        for element, snippet in MENUS[menu_pick].items():
+            data[element] = render_template(snippet)
+
+    return jsonify(data)
 
 
 @app.route("/login", methods=["GET", "POST"])
