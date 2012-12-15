@@ -30,7 +30,6 @@ login_manager.refresh_view = "reauth"
 def load_user(id):
     return USERS.get(int(id))
 
-
 login_manager.setup_app(app)
 
 
